@@ -12,6 +12,8 @@ import org.springframework.stereotype.Service;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Base64;
 
 @Service
@@ -21,15 +23,16 @@ public class ImageService {
     @Autowired
     private UserImageRepository userImageRepository;
 
-    public void createImage(Long userId, byte[] data) {
+    public Long createImage(Long userId, byte[] data) {
         Image image = imageRepository.save(new Image(data));
         Long imageId = image.getId();
         UserImage userImage = new UserImage(userId, imageId);
         userImageRepository.save(userImage);
+        return imageId;
     }
 
     public void deleteImage(String role, Long imageId) {
-        if(role.equals("admin"))
+        if (role.equals("admin"))
             imageRepository.deleteById(imageId);
         else {
             userImageRepository.deleteByImageId(imageId);
@@ -49,7 +52,7 @@ public class ImageService {
         return userImageRepository.findByUserId(userId, pageable);
     }
 
-    public Page<Image> getAllImages(int page,int size){
+    public Page<Image> getAllImages(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         return imageRepository.findAll(pageable);
     }
@@ -61,26 +64,26 @@ public class ImageService {
         }
         byte[] data = image.getData();
         try {
-            String pythonScriptPath = "src/main/python/caption.py";
-            String[] cmd = {"python", pythonScriptPath};
-            Process p = new ProcessBuilder(cmd).start();
             // 输入图片数据
-            PrintWriter stdin = new PrintWriter(new OutputStreamWriter(p.getOutputStream(), StandardCharsets.UTF_8));
-            stdin.println(Base64.getEncoder().encodeToString(data));
-            stdin.close();
+            Files.write(Paths.get("src\\main\\resources\\image_caption\\img.jpg"), data);
+            String pythonScriptPath = "src\\main\\resources\\image_caption\\main.py";
+            String[] cmd = { "python", pythonScriptPath };
+            Process p = new ProcessBuilder(cmd).start();
+            // 等待程序结束
+            p.waitFor();
             // 读取输出
-            BufferedReader stdout = new BufferedReader(new InputStreamReader(p.getInputStream(), StandardCharsets.UTF_8));
-            String label = stdout.readLine();
+            String label = Files.readString(Paths.get("src\\main\\resources\\image_caption\\output.txt"),
+                    StandardCharsets.UTF_8);
             // 设置超时时间
-            int delay = 5;
-            if (!p.waitFor(delay, java.util.concurrent.TimeUnit.SECONDS)) {
-                p.destroy();
-                throw new InterruptedException("Timeout");
-            }
+            // int delay = 5;
+            // if (!p.waitFor(delay, java.util.concurrent.TimeUnit.SECONDS)) {
+            // p.destroy();
+            // throw new InterruptedException("Timeout");
+            // }
             // 设置标签
             image.setLabel_1(label);
             imageRepository.save(image);
-            return "Hello world";
+            return label;
         } catch (IOException | InterruptedException e) {
             throw new RuntimeException("Caption failed");
         }

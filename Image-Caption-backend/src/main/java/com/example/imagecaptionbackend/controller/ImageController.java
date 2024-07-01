@@ -26,8 +26,8 @@ public class ImageController {
             return ResponseEntity.badRequest().body("Please login first");
         }
         try {
-            imageService.createImage(userId, data);
-            return ResponseEntity.ok("Upload successfully");
+            Long id = imageService.createImage(userId, data);
+            return ResponseEntity.ok(id);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }

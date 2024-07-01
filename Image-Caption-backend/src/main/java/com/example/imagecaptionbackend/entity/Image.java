@@ -18,7 +18,7 @@ public class Image {
     @Column(name = "data")
     private byte[] data;
     @ApiModelProperty(value = "标签", required = false, example = "略")
-    @Column(name = "label1")
+    @Column(name = "label_1")
     private String label_1;
 
     public Image(byte[] data) {
