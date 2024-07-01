@@ -243,18 +243,20 @@ import type {ImageCaptionData, ImageUploadData} from "@/api/images/type";
         data: "",
     })
     const reader = new FileReader();
-    reader.onload = function(event) {
-      const fileData = event.target.result;
-      uploadParam.data = fileData.toString()
-    }
+    reader.onload = function (event) {
+      const fileData = event.target?.result as string;
+      const base64Data = fileData.split(',')[1]; // Remove the data URL prefix
+      uploadParam.data = base64Data
 
-    try {
-      let result = await reqImageUpload(uploadParam)
-      console.log(result)
-      fileUploadCard.value = true
-    } catch (e: Error) {
-      console.log(e)
+      try {
+        let result = reqImageUpload(uploadParam)
+        fileUploadCard.value = true
+      } catch (e: Error) {
+        console.log(e)
+      }
     }
+    reader.readAsDataURL(target.files[0])
+
 
     // fetch(import.meta.env.VITE_API_UPLOAD, {
     //   method: 'POST',
