@@ -9,7 +9,7 @@ import {reactive, ref} from 'vue'
 import {reqUserLogout, reqUserRegister} from "@/api/users";
   import {ElMessage} from "element-plus";
 import {reqImageCaption, reqImageUpload} from "@/api/images";
-import type {ImageCaptionData, ImageUploadData} from "@/api/images/type";
+import type {ImageCaptionData, ImageCaptionResponse, ImageUploadData, ImageUploadResponse} from "@/api/images/type";
 
 
   const { scrollRef, scrollToBottom } = useScroll()
@@ -17,6 +17,7 @@ import type {ImageCaptionData, ImageUploadData} from "@/api/images/type";
   // Conversation and PDF preview panel toggle control
   let showTab = ref<string>("nav-tab-chat")
   let tabWidth = ref<string>("")
+  let imageId: number = ref<number>(1)
 
   // vue3-pdf-app UI configuration
   let pdfFile = ref<string>("")
@@ -243,17 +244,18 @@ import type {ImageCaptionData, ImageUploadData} from "@/api/images/type";
         data: "",
     })
     const reader = new FileReader();
-    reader.onload = function (event) {
-      const fileData = event.target?.result as string;
-      const base64Data = fileData.split(',')[1]; // Remove the data URL prefix
-      uploadParam.data = base64Data
+    reader.onload = async function (event) {
+        const fileData = event.target?.result as string;
+        const base64Data = fileData.split(',')[1]; // Remove the data URL prefix
+        uploadParam.data = base64Data
 
-      try {
-        let result = reqImageUpload(uploadParam)
-        fileUploadCard.value = true
-      } catch (e: Error) {
-        console.log(e)
-      }
+        try {
+            let result: ImageUploadResponse = await reqImageUpload(uploadParam)
+            imageId = result.id
+            fileUploadCard.value = true
+        } catch (e: Error) {
+            console.log(e)
+        }
     }
     reader.readAsDataURL(target.files[0])
 
@@ -398,9 +400,9 @@ import type {ImageCaptionData, ImageUploadData} from "@/api/images/type";
       //   signal: abortController.signal
       // })
       let imageCaptionParam = reactive<ImageCaptionData>({
-          id: 1, mode: 0
+          id: imageId, mode: 0
       })
-      let response = await reqImageCaption(imageCaptionParam)
+      let response:ImageCaptionResponse = await reqImageCaption(imageCaptionParam)
 
       // Reset file upload related states immediately after sending to ChatGPT
       fileName.value = ''
@@ -425,7 +427,7 @@ import type {ImageCaptionData, ImageUploadData} from "@/api/images/type";
           choices: [
               {
                   message: {
-                      content: response.data // 替换为实际的消息内容
+                      content: response.label // 替换为实际的消息内容
                   },
                   delta: {
                       content: "your_delta_content" // 替换为实际的数据增量内容
