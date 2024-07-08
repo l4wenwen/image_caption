@@ -92,6 +92,14 @@ public class ImageService {
             // throw new InterruptedException("Timeout");
             // }
             // 设置标签
+            String[] words = label.split(" ");
+            StringBuilder sb = new StringBuilder();
+            // 删除首末单词
+            for (int i = 1; i < words.length - 1; i++) {
+                sb.append(words[i]);
+                sb.append(" ");
+            }
+            label = sb.toString();
             image.setLabel_1(label);
             imageRepository.save(image);
             return label;
