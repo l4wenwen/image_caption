@@ -211,7 +211,7 @@ import type {ImageCaptionData, ImageUploadData} from "@/api/images/type";
   var fileUploadCard = ref<boolean>(false)
 
   var fileContent = ref()
-
+  let imageId = 1
 
   // Handle file upload
   async function handleUpload(e: Event) {
@@ -242,6 +242,7 @@ import type {ImageCaptionData, ImageUploadData} from "@/api/images/type";
     let uploadParam = reactive<ImageUploadData>({
         data: "",
     })
+
     const reader = new FileReader();
     reader.onload = function (event) {
       const fileData = event.target?.result as string;
@@ -249,7 +250,9 @@ import type {ImageCaptionData, ImageUploadData} from "@/api/images/type";
       uploadParam.data = base64Data
 
       try {
-        let result = reqImageUpload(uploadParam)
+        reqImageUpload(uploadParam).then(res => {
+            imageId = res.data
+        })
         fileUploadCard.value = true
       } catch (e: Error) {
         console.log(e)
@@ -398,8 +401,9 @@ import type {ImageCaptionData, ImageUploadData} from "@/api/images/type";
       //   signal: abortController.signal
       // })
       let imageCaptionParam = reactive<ImageCaptionData>({
-          id: 1, mode: 0
+          id: imageId, mode: 0
       })
+      console.log(imageCaptionParam.id)
       let response = await reqImageCaption(imageCaptionParam)
 
       // Reset file upload related states immediately after sending to ChatGPT
