@@ -17,7 +17,6 @@ import type {ImageCaptionData, ImageCaptionResponse, ImageUploadData, ImageUploa
   // Conversation and PDF preview panel toggle control
   let showTab = ref<string>("nav-tab-chat")
   let tabWidth = ref<string>("")
-  let imageId: number = ref<number>(1)
 
   // vue3-pdf-app UI configuration
   let pdfFile = ref<string>("")
@@ -212,7 +211,7 @@ import type {ImageCaptionData, ImageCaptionResponse, ImageUploadData, ImageUploa
   var fileUploadCard = ref<boolean>(false)
 
   var fileContent = ref()
-
+  let imageId = 1
 
   // Handle file upload
   async function handleUpload(e: Event) {
@@ -243,20 +242,24 @@ import type {ImageCaptionData, ImageCaptionResponse, ImageUploadData, ImageUploa
     let uploadParam = reactive<ImageUploadData>({
         data: "",
     })
+
     const reader = new FileReader();
     reader.onload = async function (event) {
         const fileData = event.target?.result as string;
         const base64Data = fileData.split(',')[1]; // Remove the data URL prefix
         uploadParam.data = base64Data
 
-        try {
-            let result: ImageUploadResponse = await reqImageUpload(uploadParam)
-            imageId = result.id
-            fileUploadCard.value = true
-        } catch (e: Error) {
-            console.log(e)
-        }
+
+      try {
+        reqImageUpload(uploadParam).then(res => {
+            imageId = res.data
+        })
+        fileUploadCard.value = true
+      } catch (e: Error) {
+        console.log(e)
+      }
     }
+
     reader.readAsDataURL(target.files[0])
 
 
@@ -402,7 +405,7 @@ import type {ImageCaptionData, ImageCaptionResponse, ImageUploadData, ImageUploa
       let imageCaptionParam = reactive<ImageCaptionData>({
           id: imageId, mode: 0
       })
-      let response:ImageCaptionResponse = await reqImageCaption(imageCaptionParam)
+      let response = await reqImageCaption(imageCaptionParam)
 
       // Reset file upload related states immediately after sending to ChatGPT
       fileName.value = ''
