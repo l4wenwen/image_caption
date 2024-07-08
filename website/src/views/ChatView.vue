@@ -643,7 +643,8 @@ import type {ImageCaptionData, ImageCaptionResponse, ImageUploadData, ImageUploa
                     <div class="media-body overflow-hidden">
                       <div class="d-flex align-items-center mb-1">
                         <h6 class="text-truncate mb-0 me-auto">图像描述</h6></div>
-                      <div class="text-truncate">Powered By OpenAI</div></div>
+<!--                      <div class="text-truncate">Powered By OpenAI</div>-->
+                    </div>
                   </div>
                 </div>
               </div>
@@ -751,14 +752,16 @@ import type {ImageCaptionData, ImageCaptionResponse, ImageUploadData, ImageUploa
 <!--                          <input type="file" accept="application/pdf" id="fileInput" ref="file" @change="handleUpload" style="display:none">-->
                           <input type="file" accept="image/*" id="fileInput" ref="file" @change="handleUpload" style="display:none">
                           <button class="btn btn-sm btn-link text-muted" data-toggle="tooltip" @click="($refs.file as HTMLInputElement).click()" title="" type="button" data-original-title="Attachment">
-                            <i class="zmdi zmdi-attachment font-22"></i>
+<!--                            <i class="zmdi zmdi-attachment font-22"></i>-->
+                            附件
                           </button>
                         </span>
                       </div>
                       <div class="input-group-append">
                         <span class="input-group-text border-0 pr-0">
                           <button type="submit" class="btn btn-primary" :disabled="buttonDisabled" @click="handleSubmit">
-                            <i class="zmdi zmdi-mail-send"></i>
+<!--                            <i class="zmdi zmdi-mail-send"></i>-->
+                            发送
                           </button>
                         </span>
                       </div>
