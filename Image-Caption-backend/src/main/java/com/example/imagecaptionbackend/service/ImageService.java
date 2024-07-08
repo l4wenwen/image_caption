@@ -10,10 +10,13 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.Base64;
 
 @Service
@@ -62,14 +65,20 @@ public class ImageService {
         if (image.isCaptioned()) {
             return image.getLabel_1();
         }
-        byte[] data = image.getData();
+        String data = new String(image.getData(), StandardCharsets.UTF_8);
+
         try {
             // 输入图片数据
-            Files.write(Paths.get("src\\main\\resources\\image_caption\\img.jpg"), data);
+            System.out.println(id);
+            Files.write(Paths.get("src\\main\\resources\\image_caption\\img.txt"), image.getData());
+            ProcessBuilder pb = new ProcessBuilder("python", "src/main/resources/convert.py");
+            Process procConvert = pb.start();
+            int exitcode = procConvert.waitFor();
+            System.out.println("ok convert " + exitcode);
             String pythonScriptPath = "src\\main\\resources\\image_caption\\main.py";
             String[] cmd = { "python", pythonScriptPath };
             Process p = new ProcessBuilder(cmd).start();
-            // 等待程序结束
+//            // 等待程序结束
             p.waitFor();
             // 读取输出
             String label = Files.readString(Paths.get("src\\main\\resources\\image_caption\\output.txt"),
