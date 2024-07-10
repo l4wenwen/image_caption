@@ -123,6 +123,6 @@ class image_Cap:
 if __name__ == "__main__":
     image_cap = image_Cap()
     # 生成描述
-    des = image_cap.put_word("./img.jpg")
+    des = image_cap.put_word("./img.png")
     with open("./output.txt", "w") as f:
         f.write(des)
