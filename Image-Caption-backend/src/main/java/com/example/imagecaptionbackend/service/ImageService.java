@@ -10,16 +10,10 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.Arrays;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.Base64;
 
 @Service
 public class ImageService {
@@ -67,7 +61,6 @@ public class ImageService {
         if (image.isCaptioned()) {
             return image.getLabel_1();
         }
-        String data = new String(image.getData(), StandardCharsets.UTF_8);
 
         try {
             // 输入图片数据
