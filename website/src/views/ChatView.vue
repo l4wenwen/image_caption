@@ -430,7 +430,7 @@ import type {ImageCaptionData, ImageCaptionResponse, ImageUploadData, ImageUploa
           choices: [
               {
                   message: {
-                      content: response.label // 替换为实际的消息内容
+                      content: response.data // 替换为实际的消息内容
                   },
                   delta: {
                       content: "your_delta_content" // 替换为实际的数据增量内容
