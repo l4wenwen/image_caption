@@ -1,5 +1,11 @@
 # ICAP (Image-Caption) 
 基于图神经网络的图像描述系统。
+```shell
+.
+├── Image-Caption-backend		#项目后端文件夹
+├── website						#项目前端文件夹
+└── README.md
+```
 
 ## 后端接口实现
 
@@ -92,3 +98,31 @@ mvn spring-boot:run
 ```bash
 Started ImageCaptionBackendApplication in 3.685 seconds (JVM running for 4.07)
 ```
+
+## website
+
+前端项目文件夹
+
+### 启动方式
+
+首先需要安装node.js，版本为20.5.1。安装之后进入项目文件夹，执行下面的指令。
+
+```shell
+cd website
+npm install	 	#安装依赖
+npm run dev		#运行项目
+```
+
+### 代码文件说明
+
+```shell
+.src
+├── App.vue			#项目启动入口
+├── api					#调用后端接口的对应请求函数
+├── assets			#前端样式以及图片资源
+├── main.ts			
+├── router			#路由相关，用于页面跳转
+├── utils				#封装好的工具函数
+└── views				#视图，包含了各个页面的源码
+```
+
