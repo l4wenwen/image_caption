@@ -77,11 +77,15 @@ public class ImageService {
             Process procConvert = pb.start();
             int exitcode = procConvert.waitFor();
             System.out.println("ok convert " + exitcode);
-            String pythonScriptPath = "src\\main\\resources\\image_caption\\main.py";
-            String[] cmd = { "python", pythonScriptPath };
-            Process p = new ProcessBuilder(cmd).start();
-//            // 等待程序结束
-            p.waitFor();
+            
+            pb = new ProcessBuilder("D:\\App\\anaconda\\envs\\ICAP\\python.exe",
+                    "D:\\Projects\\ICAP\\Image-Caption-backend\\src\\main\\resources\\image_caption\\main.py");
+            pb = pb.directory(
+                    new File("D:\\Projects\\ICAP\\Image-Caption-backend\\src\\main\\resources\\image_caption"));
+            Process p = pb.start();
+            // 等待程序结束
+            exitcode = p.waitFor();
+            System.out.println("caption status: " + exitcode);  
             // 读取输出
             String label = Files.readString(Paths.get("src\\main\\resources\\image_caption\\output.txt"),
                     StandardCharsets.UTF_8);
@@ -102,6 +106,7 @@ public class ImageService {
             label = sb.toString();
             image.setLabel_1(label);
             imageRepository.save(image);
+            System.out.println(label);
             return label;
         } catch (IOException | InterruptedException e) {
             throw new RuntimeException("Caption failed");
