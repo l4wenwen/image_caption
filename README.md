@@ -90,12 +90,12 @@ pb = pb.directory(
         new File("D:\\Projects\\ICAP\\Image-Caption-backend\\src\\main\\resources\\image_caption"));
 ```
 3. 在后端代码根目录 `Image-Caption-backend` 下，终端中执行如下指令启动 spring 应用：
-```bash
+```shell
 mvn install
 mvn spring-boot:run
 ```
 4. 若终端最末一行出现类似如下输出，则启动成功：
-```bash
+```shell
 Started ImageCaptionBackendApplication in 3.685 seconds (JVM running for 4.07)
 ```
 
