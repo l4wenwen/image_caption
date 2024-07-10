@@ -1,5 +1,8 @@
 HELP.md
 target/
+src/main/resources/image_caption/annotations/
+src/main/resources/image_caption/models/
+
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
